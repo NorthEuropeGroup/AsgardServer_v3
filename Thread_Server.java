@@ -106,9 +106,16 @@ public class Thread_Server
 					userList.get(map.get(parseCom[2]).intValue()).switchBattleFlag();//switch battle status
 				}
 			}
+			
 			else if(parseCom[1].equals("ACK"))
 			{
 				System.out.println("ACK");
+			}
+			else if(parseCom[1].equals("LOGOUT"))
+			{
+				userList.remove(map.get(parseCom[0]).intValue());
+				map.remove(parseCom[0]);
+				outToClient.writeBytes("ACK\n");
 			}
 			// if Request Thread
 			else
