@@ -106,7 +106,28 @@ public class Thread_Server
 					userList.get(map.get(parseCom[2]).intValue()).switchBattleFlag();//switch battle status
 				}
 			}
-			
+			else if(parseCom[1].equals("CARDSELECT"))
+			{
+				buf[map.get(parseCom[4]).intValue()] = clientString;
+			}
+			else if(parseCom[1].equals("BATTLE"))
+			{
+				buf[map.get(parseCom[7]).intValue()] = clientString;
+			}
+			else if(parseCom[1].equals("OVER"))
+			{
+				userList.get(map.get(parseCom[0]).intValue()).switchBattleFlag();
+			}
+			else if(parseCom[1].equals("TIMEOUT"))
+			{
+				outToClient.writeBytes("ACK\n");
+				buf[map.get(parseCom[2]).intValue()] = clientString;
+				
+				if(userList.get(map.get(parseCom[0]).intValue()).getBattleStatus())
+					userList.get(map.get(parseCom[0]).intValue()).switchBattleFlag();
+				if(userList.get(map.get(parseCom[2]).intValue()).getBattleStatus())
+					userList.get(map.get(parseCom[2]).intValue()).switchBattleFlag();
+			}
 			else if(parseCom[1].equals("ACK"))
 			{
 				System.out.println("ACK");
