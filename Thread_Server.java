@@ -85,8 +85,15 @@ public class Thread_Server
 			}
 			else if(parseCom[1].equals("BATTLE_ASK"))
 			{
-				outToClient.writeBytes("ACK\n");
-				buf[map.get(parseCom[2]).intValue()] = clientString;
+				if(userList.get(map.get(parseCom[2]).intValue()).getBattleStatus())//in battle
+				{
+					outToClient.writeBytes("BATTLEING\n");
+				}
+				else
+				{
+					outToClient.writeBytes("ACK\n");
+					buf[map.get(parseCom[2]).intValue()] = clientString;
+				}
 			}
 			else if(parseCom[1].equals("BATTLE_REPLY"))
 			{
