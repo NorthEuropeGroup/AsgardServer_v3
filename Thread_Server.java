@@ -1,7 +1,8 @@
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+//import java.util.HashMap;
+//import java.util.Map;
 
 // Server
 public class Thread_Server
@@ -19,7 +20,8 @@ public class Thread_Server
 		// the buffer for store Input Thread, 20 people max
 		String[] buf = new String[20];
 		for(int i = 0; i < 20 ; ++i) buf[i]="";
-		String username[] = new String[20];
+		User temp_user;
+		ArrayList<User> userList = new ArrayList<User>(20);
 		// ServerSocket Object
 		ServerSocket serverSocket = new ServerSocket(45321);
 		
@@ -34,52 +36,53 @@ public class Thread_Server
 				new BufferedReader(new InputStreamReader(connectionSocket.getInputStream())); 
 
 			// first get user's ID
-			String user = inFromClient.readLine();
+			String userName = inFromClient.readLine();
 			
 			// the user is first time log in
-			if(!map.containsKey(user))
+			if(!map.containsKey(userName))
 			{
 				// the message of construct user
-				System.out.println("Create user: "+user+"->"+id);
+				System.out.println("Create user: "+userName+"->"+id);
 				
-				//put the ID into string array
-				username[id] = user;
+				//put the ID into ArrayList
+				temp_user = new User(userName);
+				userList.add(temp_user);
 				
 				// build the map of user ID and index
-				map.put(user, id++);
+				map.put(userName, id++);
 			}
 			
 			// get user Index
-			now = map.get(user).intValue();
+			now = map.get(userName).intValue();
 			
-			System.out.println("the user: " + username[now] + "is logging.");// test
+			System.out.println("the user: " + userList.get(now).getID() + "is logging.");// test
 			
 			///////////////////////////////////////
 			DataOutputStream  outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 						
 			if(!buf[now].equals(""))
-				outToClient.writeBytes(buf[now]);
+				outToClient.writeBytes(buf[now]+'\n');
 			else
-				outToClient.writeBytes("none");
+				outToClient.writeBytes("none\n");
 			//////////////////////////////////////
 			
 			// second get user's action
 			String clientString = inFromClient.readLine();
 			
 			parseCom = clientString.split("#");
-			if(clientString.charAt(0)=='I')
-			{
-				
-				for(int i = 0; i < 20 ; ++i)
-				{
-				
-					if(i != now)
-						buf[i] = buf[i].concat(user+" says: "+clientString.substring(1,clientString.length())+"#");
-				}
-				
 			
-				System.out.println("Client("+connectionSocket.getInetAddress()+"): " + clientString);
+			if(parseCom[1].equals("PREBATTLE"))
+			{
+				String list = new String();
+				for(int i = 0;i < userList.size(); i++)
+				{
+					list = list.concat(userList.get(i).getID());
+					if(i != userList.size()-1)
+						list = list.concat("#");
+				}
+				outToClient.writeBytes(list+'\n');
 			}
+			
 			// if Request Thread
 			else
 			{
