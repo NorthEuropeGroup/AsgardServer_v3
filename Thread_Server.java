@@ -64,6 +64,7 @@ public class Thread_Server
 				outToClient.writeBytes(buf[now]+'\n');
 			else
 				outToClient.writeBytes("none\n");
+			buf[now] = "";
 			//////////////////////////////////////
 			
 			// second get user's action
@@ -82,7 +83,33 @@ public class Thread_Server
 				}
 				outToClient.writeBytes(list+'\n');
 			}
-			
+			else if(parseCom[1].equals("BATTLE_ASK"))
+			{
+				outToClient.writeBytes("ACK\n");
+				buf[map.get(parseCom[2]).intValue()] = clientString;
+			}
+			else if(parseCom[1].equals("BATTLE_REPLY"))
+			{
+				if(parseCom[3].equals("N"))
+				{
+					String reply = new String();
+					reply = reply.concat(parseCom[2] + "#" + "REJECT" + "#" + parseCom[0]);
+					outToClient.writeBytes(reply+'\n');
+				}
+				else if(parseCom[3].equals("Y"))
+				{
+					String reply = new String();
+					reply = reply.concat(parseCom[0] + "#" + "BATTLE" + "#" + parseCom[2]);
+					outToClient.writeBytes(reply+'\n');
+					
+					userList.get(map.get(parseCom[0]).intValue()).switchBattleFlag();
+					userList.get(map.get(parseCom[2]).intValue()).switchBattleFlag();//switch battle status
+				}
+			}
+			else if(parseCom[1].equals("ACK"))
+			{
+				System.out.println("ACK");
+			}
 			// if Request Thread
 			else
 			{
