@@ -117,29 +117,6 @@ public class Thread_Server
 				map.remove(parseCom[0]);
 				outToClient.writeBytes("ACK\n");
 			}
-			// if Request Thread
-			else
-			{
-				// The stream output to client
-				//DataOutputStream  outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-						
-				
-				// the string reply to client
-				String reply;
-				
-				// if the buffer not empty
-				if(!buf[now].equals("")) reply = "Y";
-				else reply = "N";
-				
-				// the string reply to client
-				reply = reply.concat(buf[now]);
-				
-				// reply to client
-				outToClient.writeBytes(reply+'\n');
-				
-				// erase buffer
-				buf[now] = "";
-			}
 			
 		}
 	}
